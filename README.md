@@ -1,6 +1,6 @@
 # pathfinder-rb
-[![license-badge](https://img.shields.io/github/license/phR0ze/pathfinder-rb)](https://opensource.org/licenses/MIT)
-[![build](https://github.com/phR0ze/pathfinder-rb/workflows/build/badge.svg?branch=main)](https://github.com/phR0ze/pathfinder-rb/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache2](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ***Simple point tracker in Ruby on Rails***
 
