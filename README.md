@@ -5,6 +5,8 @@
 
 ### Quick links
 * [Ruby on Rails](#ruby-on-rails)
+  * [Run your app](#run-your-app)
+    * [Dev mode across all nics](#dev-mode-accross-all-nics)
   * [Deploy Rails on Arch Linux](#deploy-rails-on-arch-linux)
   * [Rails Application](#rails-application)
     * [Route](#route)
@@ -13,12 +15,15 @@
     * [Model](#model)
   * [Populate Data](#populate-data)
     * [Console](#console)
+    * [DB Console](#db-console)
     * [Validate](#validate)
   * [Users Controller](#users-controller)
     * [List Users](#list-users)
     * [Add audio](#add-audio)
   * [Points Controller](#points-controller)
     * [New Points](#new-points)
+  * [Rewards Controller](#rewards-controller)
+    * [New Rewards](#new-rewards)
 * [Contribute](#contribute)
   * [Git-Hook](#git-hook)
 * [License](#license)
@@ -39,6 +44,16 @@ References:
 * [Ruby Documentation](https://www.ruby-lang.org/en/documentation/)
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
+## Run your app <a name="run-your-app"/></a>
+
+### Dev mode across all nics <a name="dev-mode-across-all-nics"/></a>
+Running your app locally with it bound to all NICs allows other machines on your network to pull it
+up by your network address i.e. `192.168.1.4:3000/users` not just `127.0.0.1:3000/users`
+
+```bash
+$ bin/rails server -b 0.0.0.0
+```
+
 ## Deploy Rails on Arch Linux <a name="deploy-rails-on-arch-linux"/></a>
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
@@ -46,16 +61,16 @@ References:
    ```bash
    $ sudo pacman -S ruby sqlite nodejs yarn clang make pkg-config sqlitebrowser
    ```
-2. Install Rails:
-   ```bash
-   $ gem install rails
-   $ gem update
-   ```
-3. Add the ruby bin path to $PATH
+2. Add the ruby bin path to $PATH
    ```bash
    $ PATH=PATH:$HOME/.local/share/gem/ruby/3.0.0/bin
    $ rails --version
    Rails 6.1.4
+   ```
+3. Install Rails:
+   ```bash
+   $ gem install rails
+   $ gem update
    ```
 4. Create a new rails application `~/Projects/pathfinder`:
    ```bash
@@ -92,10 +107,11 @@ Routes are rules written in a [Ruby DSL(Domain Specific Language)](https://guide
 Add our new routes to `config/routes.rb`
 ```ruby
 Rails.application.routes.draw do
-  get "/users", to: "users#index"
-  get "/points", to: "points#index"
-  get "/rewards", to: "rewards#index"
-  get "/categories", to: "categories#index"
+  resources :users do
+    resources :points
+    resources :rewards
+  end
+  resources :categories
 end
 ```
 
@@ -157,6 +173,7 @@ the values when we create or update a model object.
    ```bash
    $ bin/rails generate model User name:string
    $ bin/rails generate model Category name:string value:integer
+   $ bin/rails generate model Reward value:integer user:references
    $ bin/rails generate model Point value:integer user:references category:references
    ```
 
@@ -168,7 +185,7 @@ the values when we create or update a model object.
 ## Populate Data <a name="populate-data"/></a>
 
 ### Console <a name="console"/></a>
-The first thin we have to do is fix rail'ss irb issue
+The first thin we have to do is fix rail's irb issue
 1. Edit `Gemfile`
 2. Find the the block below
    ```ruby
@@ -206,9 +223,30 @@ The first thin we have to do is fix rail'ss irb issue
    # Delete the specific user
    $ User.delete(1)
 
-   # Print out the model schema
+   # Print out the model schema after loading it with User.all
    $ User
    ```
+
+### DB Console <a name="db-console"/></a>
+Rails also has a dedicated Database console with databasse related commands available
+```bash
+$ bin/rails db
+
+# You can see the current tables with the `.table` command
+sqlite> .table
+ar_internal_metadata  points                users
+categories            schema_migrations
+
+# List out help
+sqlite> .help
+
+# List out the database file
+sqlite> .databases
+main: /Projects/pathfinder/db/development.sqlite3 r/w
+
+# Quite
+sqlite> .quit
+```
 
 ## Users Controller <a name="users-controller"/></a>
 
@@ -242,19 +280,53 @@ into a global variable and make them available to the view
 To add a sound clip we can play when given a user points we need to:
 
 1. Add the new sound to `app/assets/audios`
-2. Add `//= link_tree ../audios` to `app/assets/config/manifest.js`
-3. Restart the server `bin/rails server -b 0.0.0.0`
+   ```bash
+   cp success.wav app/assets/audios
+   ```
+2. Restart the server `bin/rails server -b 0.0.0.0`
+3. Using the new audio file in your view requires injecting the audio element
+   ```html
+   <%= audio_tab "success.wav", id: "audio_success" %>
+   ```
+4. Then setting up an onclick to fire it
+   ```html
+   <div onclick="play()">Click me</div>
+   ```
+5. Finally setup the javascript to call back and play the audio
+   ```html
+   function play() {
+     document.getElementById("audio_success").play();
+   }
+   ```
 
 ## Points Controller <a name="points-controller"/></a>
 Rails has a helper called `resources` that maps all CRUD operations for an endpoint to the
 controller. We can edit `config/routes.rb` and replace our points entry with `resources :points` to
-get all CRUD operations mapped to our points controller.
+get all CRUD operations mapped to our points controller. To establish the relationship between users
+and points we need to nest the points routes.
 
 ```ruby
 Rails.application.routes.draw do
-  resources :points
+  resources :users do
+    resources :points
+  end
 end
 ```
+
+You can see the current routes via rails
+```bash
+$ bin/rails routes
+Prefix            Verb   URI Pattern                                    Controller#Action
+user_points       GET    /users/:user_id/points(.:format)               points#index
+                  POST   /users/:user_id/points(.:format)               points#create
+new_user_point    GET    /users/:user_id/points/new(.:format)           points#new
+edit_user_point   GET    /users/:user_id/points/:id/edit(.:format)      points#edit
+user_point        GET    /users/:user_id/points/:id(.:format)           points#show
+```
+
+The `Prefix` colum calls out the shortcut route string that can be used in your application to route
+to a particular view. For example `new_user_point` suffixed with `_path` can be used in the
+templating with `<%= link_to new_user_point_path(reward) do %>` will load the new user points view.
 
 ### New Points <a name="new-points"/></a>
 1. Edit the points controller `app/controllers/points_controller.rb` and add the following functions.
@@ -265,18 +337,19 @@ end
      @point = Point.new
    end
    def create
-     @points = Points.new(value: 1, category_id: 1, user_id: 1)
-     if @points.save
-       # Use redirect_to after mutating the database so that if the page is refreshed it doesn't
-       # repeat the same request
-       redirect_to @users
+     @user = User.find(params[:user_id])
+     success = true
+     fields = params[:point]
+     fields.each do |category_id, value|
+       point = Poin.new(value: value, user_id: @user.id, category_id: category_id)
+       success = false if !point.save
+     end
+     if success
+       redirect_to users_url
      else
        render :new
      end
    end
-   ```
-2. Using the Rails Form Builder to create the form edit `app/views/points/new`
-   ```
    ```
 
 ### Validate <a name="validate"/></a>
@@ -286,6 +359,51 @@ end
    ```
 2. Navigate in a browser to `http://127.0.0.1:3000/users`
 
+## Rewards Controller <a name="rewards-controller"/></a>
+We can use a similar relationship routing update as the points controller to add in the rewards
+relationship to users in the `config/routes.rb` router.
+
+```ruby
+Rails.application.routes.draw do
+  resources :users do
+    resources :points
+    resources :rewards
+  end
+end
+```
+
+You can see the current routes via rails
+```bash
+$ bin/rails routes
+Prefix            Verb   URI Pattern                                    Controller#Action
+...
+user_rewards      GET    /users/:user_id/rewards(.:format)              rewards#index
+                  POST   /users/:user_id/rewards(.:format)              rewards#create
+new_user_reward   GET    /users/:user_id/rewards/new(.:format)          rewards#new
+edit_user_reward  GET    /users/:user_id/rewards/:id/edit(.:format)     rewards#edit
+user_reward       GET    /users/:user_id/rewards/:id(.:format)          rewards#show
+```
+
+We can see that the appropriate shorcut route string will be `new_user_reward` plus the suffix `_path`.
+
+### New Rewards <a name="new-rewards"/></a>
+1. Editing the rewards controller `app/controllers/rewards_controller.rb` and add the following functions.
+   The `new` function is used to create a new instance but not save it and the `create` to save out a
+   fully populated instance.
+   ```ruby
+   ```
+2. Editing the rewards view `app/views/rewards/index.html.rb`
+   ```html
+   ```
+3. Update the rewards relationship to users `app/models/user.rb` to establish the `@user.rewards`
+   data aggregate i.e. rails will automatically pull all rewards for the give user and populate the
+   property on the user class.
+   ```ruby
+   class User < ApplicationRecord
+     has_many :points
+     has_many :rewards
+   end
+   ```
 
 ---
 
