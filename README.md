@@ -5,9 +5,11 @@
 
 ### Quick links
 * [Ruby on Rails](#ruby-on-rails)
-  * [Run your app](#run-your-app)
-    * [Dev mode across all nics](#dev-mode-accross-all-nics)
   * [Deploy Rails on Arch Linux](#deploy-rails-on-arch-linux)
+    * [Install Rails](#install-rails)
+    * [Create Rails app](#create-rails-app)
+    * [Migrate to new server](#migrate-to-new-server)
+    * [Run your app](#run-your-app)
   * [Rails Application](#rails-application)
     * [Route](#route)
     * [Controller](#controller)
@@ -44,19 +46,10 @@ References:
 * [Ruby Documentation](https://www.ruby-lang.org/en/documentation/)
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
-## Run your app <a name="run-your-app"/></a>
-
-### Dev mode across all nics <a name="dev-mode-across-all-nics"/></a>
-Running your app locally with it bound to all NICs allows other machines on your network to pull it
-up by your network address i.e. `192.168.1.4:3000/users` not just `127.0.0.1:3000/users`
-
-```bash
-$ bin/rails server -b 0.0.0.0
-```
-
 ## Deploy Rails on Arch Linux <a name="deploy-rails-on-arch-linux"/></a>
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
+### Install Rails <a name="install-rails"/></a>
 1. Install the prerequisites:
    ```bash
    $ sudo pacman -S ruby sqlite nodejs yarn clang make pkg-config sqlitebrowser
@@ -72,19 +65,31 @@ $ bin/rails server -b 0.0.0.0
    $ gem install rails
    $ gem update
    ```
-4. Create a new rails application `~/Projects/pathfinder`:
-   ```bash
-   $ git config --global init.defaultBranch main
 
-   # Creates a new git repo at the given name
-   $ rails new pathfinder
-   ```
-5. Start your new web application
+### Create Rails app <a name="create-rails-app"/></a>
+Create a new rails application `~/Projects/pathfinder` which will be a new git repo.
+```bash
+$ rails new pathfinder
+```
+
+### Migrate to new server<a name="migrate-to-new-server"/></a>
+When migrating to a new server you'll need to run the `bundle install`
+```bash
+$ cd pathfinder
+$ bundle install
+```
+
+### Run your app <a name="run-your-app"/></a>
+Running your app locally with it bound to all NICs allows other machines on your network to pull it
+up by your network address i.e. `192.168.1.4:3000/users` not just `127.0.0.1:3000/users`
+
+1. Start your new web application
    ```bash
    $ cd pathfinder
    $ bin/rails server -b 0.0.0.0
    ```
-6. Navigate in a browser to `http://127.0.0.1:3000`
+
+2. Navigate in a browser to `http://127.0.0.1:3000`
 
 ## Rails Application <a name="rails-application"/></a>
 The Rails Way makes extensive use of the `MVC (Model View Controller)` pattern. Routes, controllers,
@@ -434,3 +439,7 @@ any additional terms or conditions.
 * Setup and document ruby on rails on linux
 
 # Changelog <a name="changelog"/></a>
+
+<!-- 
+vim: ts=2:sw=2:sts=2
+-->
