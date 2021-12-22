@@ -87,7 +87,11 @@ gems installed depend on a specific version of ruby or a specific version of nat
 of which were probably upgraded and changed during the system upgrade. Additionally ruby doesn't have 
 a good way to clean out all the broken gems:
 
-1. Find your current gem paths
+1. If the Ruby version changes e.g. `3.0.2` to `3.0.3`  
+   a. Update the `Gemfile` Ruby version e.g. `3.0.2` to `3.0.3`  
+   b. Remove the lock file: `rm Gemfile.lock`  
+
+2. Find your current gem paths
    ```bash
    $ gem env
    ...
@@ -95,17 +99,19 @@ a good way to clean out all the broken gems:
    - USER INSTALLATION DIRECTORY: ~/.local/share/gem/ruby/3.0.0
    ...
    ```
-2. Delete them
+
+3. Delete them
    ```bash
    $ sudo rm -rf /usr/lib/ruby/gems/3.0.0
    $ rm -rf ~/.local/share/gem/ruby/3.0.0
    ```
 
-3. Reinstall ruby
+4. Reinstall ruby
    ```bash
    $ sudo pacman -S ruby --overwrite '*'
    ```
-4. Install rails and your bundle
+
+5. Install rails and your bundle
    ```bash
    $ gem install rails
    $ gem install bundler
