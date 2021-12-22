@@ -26,6 +26,7 @@
     * [New Points](#new-points)
   * [Rewards Controller](#rewards-controller)
     * [New Rewards](#new-rewards)
+  * [History Controller](#history-controller)
 * [Contribute](#contribute)
   * [Git-Hook](#git-hook)
 * [License](#license)
@@ -72,12 +73,44 @@ Create a new rails application `~/Projects/pathfinder` which will be a new git r
 $ rails new pathfinder
 ```
 
-### Migrate to new server<a name="migrate-to-new-server"/></a>
+### Migrate to new server <a name="migrate-to-new-server"/></a>
 When migrating to a new server you'll need to run the `bundle install`
 ```bash
 $ cd pathfinder
+$ gem install bundler
 $ bundle install
 ```
+
+### Upgrading server breakages <a name="upgrading-server-breakages"/></a>
+After a server upgrade anything ruby or rails related is usually broken because the specific 
+gems installed depend on a specific version of ruby or a specific version of native libraries; both 
+of which were probably upgraded and changed during the system upgrade. Additionally ruby doesn't have 
+a good way to clean out all the broken gems:
+
+1. Find your current gem paths
+   ```bash
+   $ gem env
+   ...
+   - INSTALLATION DIRECTORY: /usr/lib/ruby/gems/3.0.0
+   - USER INSTALLATION DIRECTORY: ~/.local/share/gem/ruby/3.0.0
+   ...
+   ```
+2. Delete them
+   ```bash
+   $ sudo rm -rf /usr/lib/ruby/gems/3.0.0
+   $ rm -rf ~/.local/share/gem/ruby/3.0.0
+   ```
+
+3. Reinstall ruby
+   ```bash
+   $ sudo pacman -S ruby --overwrite '*'
+   ```
+4. Install rails and your bundle
+   ```bash
+   $ gem install rails
+   $ gem install bundler
+   $ bundle install
+   ```
 
 ### Run your app <a name="run-your-app"/></a>
 Running your app locally with it bound to all NICs allows other machines on your network to pull it
@@ -190,7 +223,7 @@ the values when we create or update a model object.
 ## Populate Data <a name="populate-data"/></a>
 
 ### Console <a name="console"/></a>
-The first thin we have to do is fix rail's irb issue
+The first thing we have to do is fix rail's irb issue
 1. Edit `Gemfile`
 2. Find the the block below
    ```ruby
@@ -409,6 +442,48 @@ We can see that the appropriate shorcut route string will be `new_user_reward` p
      has_many :rewards
    end
    ```
+
+## History Controller <a name="history-controller"/></a>
+Documenting adding a new history controller to present a user's data per category over a period of 
+time.
+
+1. Create the new controller:
+   ```bash
+   $ bin/rails generate controller History index --skip-routes
+     create  app/controllers/history_controller.rb
+     invoke  erb
+     create    app/views/history
+     create    app/views/history/index.html.erb
+     invoke  test_unit
+     create    test/controllers/history_controller_test.rb
+     invoke  helper
+     create    app/helpers/history_helper.rb
+     invoke    test_unit
+     invoke  assets
+     invoke    scss
+   ```
+2. Update the routing table `config/routes.rb`:
+   ```ruby
+   Rails.application.routes.draw do
+     resources :users do
+       resources :points
+       resources :rewards
+     end
+     resources :history
+     resources :categories
+   end
+   ```
+3. Check the current routes via rails:
+   ```bash
+   $ bin/rails routes
+   Prefix            Verb   URI Pattern                                    Controller#Action
+   ...
+   history_index     GET    /history(.:format)                             history#index
+   new_history       GET    /history/new(.:format)                         history#new
+   edit_history      GET    /history/:id/edit(.:format)                    history#edit
+   history           GET    /history/:id(.:format)                         history#show
+   ```
+4. We'll be building out an index page using `history_index_path`
 
 ---
 
