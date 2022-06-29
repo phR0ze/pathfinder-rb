@@ -4,7 +4,12 @@
 ***Simple point tracker in Ruby on Rails***
 
 ### Quick links
+* [Deployment](#deployment)
+  * [Build container](#build-container)
+  * [Run on server](#run-on-server)
+  * [Run manually](#run-manually)
 * [Ruby on Rails](#ruby-on-rails)
+  * [Overview](#overview)
   * [Deploy Rails on Arch Linux](#deploy-rails-on-arch-linux)
     * [Install Rails](#install-rails)
     * [Create Rails app](#create-rails-app)
@@ -36,21 +41,45 @@
 
 ---
 
-# Ruby on Rails <a name="ruby-on-rails"/></a>
-Rails is a web application framework running on the Ruby programming language. It is designed to make
-programming web applications easier by making assumptions about what every developer needs to get
-started. It allows you to write less code while accomplishing more. If you learn ***The Rails Way***
-the sales pitch is you'll be productive. ***The Rails Way*** is based heavily on convention and is
+# Deployment
+
+## Build container
+```bash
+$ docker build -t pathfinder-rb .
+```
+
+## Run on server
+```
+$ docker run --rm -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb
+```
+
+## Run manually
+1. Execute app in shell
+   ```bash
+   $ docker run --rm -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb
+   ```
+2. Navigate in a browser to `http://127.0.0.1:3000`
+
+---
+
+# Ruby on Rails
+Documenting the process I went through to create this basic Rails app
+
+## Overview
+Rails is a web application framework running on the Ruby runtime. It is designed to make programming 
+web applications easier by making assumptions about what every developer needs to get started. It 
+allows you to write less code while accomplishing more. If you learn ***The Rails Way*** the sales 
+pitch is you'll be productive faster. ***The Rails Way*** is based heavily on convention and is 
 highly opinionated.
 
 References:
 * [Ruby Documentation](https://www.ruby-lang.org/en/documentation/)
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
-## Deploy Rails on Arch Linux <a name="deploy-rails-on-arch-linux"/></a>
+## Deploy Rails on Arch Linux
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
-### Install Rails <a name="install-rails"/></a>
+### Install Rails
 1. Install the prerequisites:
    ```bash
    $ sudo pacman -S ruby sqlite nodejs yarn clang make pkg-config sqlitebrowser
@@ -58,22 +87,23 @@ References:
 2. Add the ruby bin path to $PATH
    ```bash
    $ PATH=PATH:$HOME/.local/share/gem/ruby/3.0.0/bin
-   $ rails --version
-   Rails 6.1.4
    ```
 3. Install Rails:
    ```bash
    $ gem install rails
    $ gem update
+
+   $ rails --version
+   Rails 6.1.4
    ```
 
-### Create Rails app <a name="create-rails-app"/></a>
+### Create Rails app
 Create a new rails application `~/Projects/pathfinder` which will be a new git repo.
 ```bash
 $ rails new pathfinder
 ```
 
-### Migrate to new server <a name="migrate-to-new-server"/></a>
+### Migrate to new server
 When migrating to a new server you'll need to run the `bundle install`
 ```bash
 $ cd pathfinder
@@ -81,11 +111,14 @@ $ gem install bundler
 $ bundle install
 ```
 
-### Upgrading server breakages <a name="upgrading-server-breakages"/></a>
+### Upgrading server breakages
 After a server upgrade anything ruby or rails related is usually broken because the specific 
 gems installed depend on a specific version of ruby or a specific version of native libraries; both 
 of which were probably upgraded and changed during the system upgrade. Additionally ruby doesn't have 
 a good way to clean out all the broken gems:
+
+NOTE: you can avoid this entirely by [containerizing your app](https://github.com/phR0ze/alpine-rails#build)
+then [running on a server](#run-on-server)
 
 1. If the Ruby version changes e.g. `3.0.2` to `3.0.3`  
    a. Update the `Gemfile` Ruby version e.g. `3.0.2` to `3.0.3`  
@@ -118,7 +151,7 @@ a good way to clean out all the broken gems:
    $ bundle install
    ```
 
-### Run your app <a name="run-your-app"/></a>
+### Run your app
 Running your app locally with it bound to all NICs allows other machines on your network to pull it
 up by your network address i.e. `192.168.1.4:3000/users` not just `127.0.0.1:3000/users`
 
@@ -130,7 +163,7 @@ up by your network address i.e. `192.168.1.4:3000/users` not just `127.0.0.1:300
 
 2. Navigate in a browser to `http://127.0.0.1:3000`
 
-## Rails Application <a name="rails-application"/></a>
+## Rails Application
 The Rails Way makes extensive use of the `MVC (Model View Controller)` pattern. Routes, controllers,
 actions, models and views are all typical pieces.  MVC is a design pattern that divides the
 responsibilities of an application to make it easier to reason about.
@@ -145,7 +178,7 @@ In this case we'll be building a simple application that allows a user to add st
 categories and assign a positive or negative amount of points in a category to a given student and
 have the ability to see the aggregate points for the day, previous day or all time.
 
-### Route <a name="route"/></a>
+### Route
 Routes are rules written in a [Ruby DSL(Domain Specific Language)](https://guides.rubyonrails.org/routing.html). 
 
 Add our new routes to `config/routes.rb`
@@ -159,7 +192,7 @@ Rails.application.routes.draw do
 end
 ```
 
-### Controller <a name="controller"/></a>
+### Controller
 Controllers are Ruby classes and their public methods are actions.
 
 Generate a few controllers we'll need:
@@ -180,7 +213,7 @@ Rails creates a few files per controler e.g.:
   ```
 * `app/views/users/index.html.rb` the view file
 
-### View <a name="view"/></a>
+### View
 Views are templates, usually written in a mixture of HTML and Ruby
 
 Update the index file with our hello message:
@@ -188,7 +221,7 @@ Update the index file with our hello message:
 $ echo "<h1>Hello Rails</h1>" > app/views/users/index.html.rb
 ```
 
-### Model <a name="model"/></a>
+### Model
 A `model` is a Ruby class that is used to represent data. Additionally models can interact with the
 appliation's database through a feature of Rails called `Active Record`.
 
@@ -226,9 +259,9 @@ the values when we create or update a model object.
    $ bin/rails db:migrate
    ```
 
-## Populate Data <a name="populate-data"/></a>
+## Populate Data
 
-### Console <a name="console"/></a>
+### Console
 The first thing we have to do is fix rail's irb issue
 1. Edit `Gemfile`
 2. Find the the block below
@@ -271,7 +304,7 @@ The first thing we have to do is fix rail's irb issue
    $ User
    ```
 
-### DB Console <a name="db-console"/></a>
+### DB Console
 Rails also has a dedicated Database console with databasse related commands available
 ```bash
 $ bin/rails db
@@ -292,9 +325,9 @@ main: /Projects/pathfinder/db/development.sqlite3 r/w
 sqlite> .quit
 ```
 
-## Users Controller <a name="users-controller"/></a>
+## Users Controller
 
-### List Users <a name="list-users"/></a>
+### List Users
 Ruby global varibles are available in the view code so we can extract the users from the database
 into a global variable and make them available to the view
 
@@ -320,7 +353,7 @@ into a global variable and make them available to the view
    </ul>
    ```
 
-### Add audio <a name="add-audio"/></a>
+### Add audio
 To add a sound clip we can play when given a user points we need to:
 
 1. Add the new sound to `app/assets/audios`
@@ -343,7 +376,7 @@ To add a sound clip we can play when given a user points we need to:
    }
    ```
 
-## Points Controller <a name="points-controller"/></a>
+## Points Controller
 Rails has a helper called `resources` that maps all CRUD operations for an endpoint to the
 controller. We can edit `config/routes.rb` and replace our points entry with `resources :points` to
 get all CRUD operations mapped to our points controller. To establish the relationship between users
@@ -372,7 +405,7 @@ The `Prefix` colum calls out the shortcut route string that can be used in your 
 to a particular view. For example `new_user_point` suffixed with `_path` can be used in the
 templating with `<%= link_to new_user_point_path(reward) do %>` will load the new user points view.
 
-### New Points <a name="new-points"/></a>
+### New Points
 1. Edit the points controller `app/controllers/points_controller.rb` and add the following functions.
    The `new` function is used to create a new instance but not save it and the `create` to save out a
    fully populated instance.
@@ -396,14 +429,14 @@ templating with `<%= link_to new_user_point_path(reward) do %>` will load the ne
    end
    ```
 
-### Validate <a name="validate"/></a>
+### Validate
 1. Start the rails app back up
    ```bash
    $ bin/rails server
    ```
 2. Navigate in a browser to `http://127.0.0.1:3000/users`
 
-## Rewards Controller <a name="rewards-controller"/></a>
+## Rewards Controller
 We can use a similar relationship routing update as the points controller to add in the rewards
 relationship to users in the `config/routes.rb` router.
 
@@ -430,7 +463,7 @@ user_reward       GET    /users/:user_id/rewards/:id(.:format)          rewards#
 
 We can see that the appropriate shorcut route string will be `new_user_reward` plus the suffix `_path`.
 
-### New Rewards <a name="new-rewards"/></a>
+### New Rewards
 1. Editing the rewards controller `app/controllers/rewards_controller.rb` and add the following functions.
    The `new` function is used to create a new instance but not save it and the `create` to save out a
    fully populated instance.
@@ -449,7 +482,7 @@ We can see that the appropriate shorcut route string will be `new_user_reward` p
    end
    ```
 
-## History Controller <a name="history-controller"/></a>
+## History Controller
 Documenting adding a new history controller to present a user's data per category over a period of 
 time.
 
@@ -493,33 +526,33 @@ time.
 
 ---
 
-# Contribute <a name="Contribute"/></a>
+# Contribute
 Pull requests are always welcome. However understand that they will be evaluated purely on whether
 or not the change fits with my goals/ideals for the project.
 
-## Git-Hook <a name="git-hook"/></a>
+## Git-Hook
 Enable the git hooks to have automatic version increments
 ```bash
 cd ~/Projects/clu
 git config core.hooksPath .githooks
 ```
 
-# License <a name="license"/></a>
+# License
 This project is licensed under either of:
  * MIT license [LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT
  * Apache License, Version 2.0 [LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0
 
-## Contribution <a name="contribution"/></a>
+## Contribution
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
 this project by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without
 any additional terms or conditions.
 
 ---
 
-# Backlog <a name="backlog"/></a>
+# Backlog
 * Setup and document ruby on rails on linux
 
-# Changelog <a name="changelog"/></a>
+# Changelog
 
 <!-- 
 vim: ts=2:sw=2:sts=2
