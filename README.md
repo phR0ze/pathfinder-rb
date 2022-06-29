@@ -16,10 +16,10 @@
     * [Migrate to new server](#migrate-to-new-server)
     * [Run your app](#run-your-app)
   * [Rails Application](#rails-application)
-    * [Route](#route)
-    * [Controller](#controller)
-    * [View](#view)
-    * [Model](#model)
+    * [Routes](#routes)
+    * [Controllers](#controllers)
+    * [Views](#views)
+    * [Models](#models)
   * [Populate Data](#populate-data)
     * [Console](#console)
     * [DB Console](#db-console)
@@ -79,6 +79,9 @@ References:
 ## Deploy Rails via Docker
 
 ### Create Rails app
+The following steps create a new Rails app. Since we're creating the Rails app in an existing rep we 
+use the `--skip-git` and move the generated content up one dir.
+
 1. Create a new rails app via the `alpine-rails` image:
    ```bash
    $ docker run --rm -v $(pwd):/usr/src/app phR0ze/alpine-rails:3.16 rails new pathfinder --skip-git --minimal
@@ -177,7 +180,7 @@ up by your network address i.e. `192.168.1.4:3000/users` not just `127.0.0.1:300
 
 ## Rails Application
 The Rails Way makes extensive use of the `MVC (Model View Controller)` pattern. Routes, controllers,
-actions, models and views are all typical pieces.  MVC is a design pattern that divides the
+actions, models and views are all typical pieces. MVC is a design pattern that divides the
 responsibilities of an application to make it easier to reason about.
 
 * `route` maps a request to a controller action
@@ -190,7 +193,7 @@ In this case we'll be building a simple application that allows a user to add st
 categories and assign a positive or negative amount of points in a category to a given student and
 have the ability to see the aggregate points for the day, previous day or all time.
 
-### Route
+### Routes
 Routes are rules written in a [Ruby DSL(Domain Specific Language)](https://guides.rubyonrails.org/routing.html). 
 
 Add our new routes to `config/routes.rb`
@@ -200,11 +203,12 @@ Rails.application.routes.draw do
     resources :points
     resources :rewards
   end
+  resources :history
   resources :categories
 end
 ```
 
-### Controller
+### Controllers
 Controllers are Ruby classes and their public methods are actions.
 
 Generate a few controllers we'll need:
@@ -225,7 +229,7 @@ Rails creates a few files per controler e.g.:
   ```
 * `app/views/users/index.html.rb` the view file
 
-### View
+### Views
 Views are templates, usually written in a mixture of HTML and Ruby
 
 Update the index file with our hello message:
@@ -233,7 +237,7 @@ Update the index file with our hello message:
 $ echo "<h1>Hello Rails</h1>" > app/views/users/index.html.rb
 ```
 
-### Model
+### Models
 A `model` is a Ruby class that is used to represent data. Additionally models can interact with the
 appliation's database through a feature of Rails called `Active Record`.
 
@@ -274,28 +278,11 @@ the values when we create or update a model object.
 ## Populate Data
 
 ### Console
-The first thing we have to do is fix rail's irb issue
-1. Edit `Gemfile`
-2. Find the the block below
-   ```ruby
-   group :development, :test do
-     # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-     gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-   end
-   ```
-3. Add the line `gem 'irb', require: false` after `bybug`
-   ```ruby
-   group :development, :test do
-     # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-     gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-     gem 'irb', require: false
-   end
-   ```
-4. Launch the console:
+1. Launch the console:
    ```bash
-   $ bin/rails console
+   $ docker run --rm -it -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb rails console
    ```
-5. Create a new user and save it to the database. Once the user is saved the user object gets updated
+2. Create a new user and save it to the database. Once the user is saved the user object gets updated
    with the finalized properties. Observable with `sqlitebrowser db/development.sqlite3`
    ```ruby
    $ user = User.new(name: "foo")
