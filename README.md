@@ -76,6 +76,19 @@ References:
 * [Ruby Documentation](https://www.ruby-lang.org/en/documentation/)
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
+## Deploy Rails via Docker
+
+### Create Rails app
+1. Create a new rails app via the `alpine-rails` image:
+   ```bash
+   $ docker run --rm -v $(pwd):/usr/src/app phR0ze/alpine-rails:3.16 rails new pathfinder --skip-git --minimal
+   ```
+2. Move the new app bits up one directory
+   ```bash
+   $ move pathfinder/* .
+   $ rmdir pathfinder
+   ```
+
 ## Deploy Rails on Arch Linux
 * [Getting Started with Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 
@@ -98,7 +111,6 @@ References:
    ```
 
 ### Create Rails app
-Create a new rails application `~/Projects/pathfinder` which will be a new git repo.
 ```bash
 $ rails new pathfinder
 ```
