@@ -1,2 +1,21 @@
-<h1>Rewards#index</h1>
-<p>Find me in app/views/rewards/index.html.erb</p>
+<div class="wide">
+  <%= link_to "Today", users_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Rewards", user_rewards_path(0), class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Categories", categories_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "History", history_index_path, class: "header" %>
+</div>
+
+<div class="main">
+  <% @users.each do |user| %>
+    <%= link_to new_user_reward_path(user) do %>
+      <div class="item">
+        <%= user.name %>
+        <div class="points">
+          <%= user.points.sum(:value) - user.rewards.sum(:value) %>
+        </div>
+      </div><% end %>
+  <% end %>
+<div>

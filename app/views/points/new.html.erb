@@ -1,0 +1,41 @@
+<div class="wide">
+  <%= link_to "Today", users_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Rewards", user_rewards_path(0), class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Categories", categories_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "History", history_index_path, class: "header" %>
+</div>
+
+<div class="main">
+  <p class="title">Points for <%= @user.name %></p>
+  <div class="total"><span id="total">0</span></div>
+
+  <%= form_with model: [ @user, @user.points.build ] do |f| %>
+    <% @categories.each do |category| %>
+      <div class="item_small">
+        <%= category.name %><br>
+        <div class="minus_button" onclick="updateTotal(<%= category.id %>, -1)">-1</div>
+        <div class="minus_button" onclick="updateTotal(<%= category.id %>, -5)">-5</div>
+        <div class="plus_button" onclick="updateTotal(<%= category.id %>, 1)">+1</div>
+        <div class="plus_button" onclick="updateTotal(<%= category.id %>, 5)">+5</div>
+        <div class="hidden"><%= f.hidden_field category.id.to_s.to_sym, value: 0 %></div>
+      </div>
+    <% end %>
+    <div><%= f.submit "Activate Points", class: "submit_button" %></div>
+  <% end %>
+</div>
+
+<script>
+function updateTotal(category, points) {
+  // Update the specific category. Rails generates the ids with the 'point_' prefix
+  category_id = "point_" + category;
+  category = parseInt(document.getElementById(category_id).value);
+  document.getElementById(category_id).value = category + points;
+
+  // Update the grand total
+  total = parseInt(document.getElementById("total").innerHTML);
+  document.getElementById("total").innerHTML = total + points;
+}
+</script>

@@ -1,0 +1,6 @@
+<h1>Categories#edit</h1>
+
+<%= render "form", category: @category %>
+
+<br>
+<%= link_to "Destroy", category_path(@category), method: :delete, data: { confirm: "Are you sure?"} %>

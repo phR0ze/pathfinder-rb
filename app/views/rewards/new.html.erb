@@ -1,0 +1,51 @@
+<div class="wide">
+  <%= link_to "Today", users_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Rewards", user_rewards_path(0), class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Categories", categories_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "History", history_index_path, class: "header" %>
+</div>
+
+<div class="main">
+  <%= audio_tag "success.wav", id: "audio_success" %>
+  <div class="title">Rewards for <%= @user.name %></div><br>
+  <div class="item">Total Remaining<div class="points" id="remaining"><%= @remaining %></div></div>
+  <div class="item">Total Cashed Out<div class="points" id="cashed_out"><%= @cashed_out %></div></div>
+
+  <%= form_with model: [ @user, @user.rewards.build ] do |f| %>
+    <p class="header" style="margin: 30px 30px 0px 30px; font-size: 3.5em;">Enter value to cash out</p>
+    <%= f.text_field :value, size: "3", class: "input_box", id: "value", placeholder: "0" %>
+    <div><%= f.submit "Cash out", class: "submit_button" %></div>
+  <% end %>
+</div>
+
+<script>
+  var input = document.getElementById("value");
+  input.addEventListener('keyup', function() {
+    cashed_out = <%= @cashed_out %>;
+    remaining = <%= @remaining %>;
+    value = document.getElementById("value").value;
+
+    // Validate input value
+    parsed = parseInt(value);
+    if (parsed > 0 && parsed < remaining) {
+      value = parsed;
+      cashed_out = <%= @cashed_out %> + value;
+      remaining = <%= @remaining %> - value;
+    } else {
+      value = '';
+    }
+
+    // Update the values with the new number
+    document.getElementById("value").value = value;
+    document.getElementById("remaining").innerHTML = remaining;
+    document.getElementById("cashed_out").innerHTML = cashed_out;
+  });
+
+  function play() {
+    document.getElementById("success").play();
+  //  Rails.fire(document.getElementById("success"));
+  }
+</script>

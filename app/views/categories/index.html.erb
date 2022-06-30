@@ -1,2 +1,21 @@
-<h1>Categories#index</h1>
-<p>Find me in app/views/categories/index.html.erb</p>
+<div class="wide">
+  <%= link_to "Today", users_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Rewards", user_rewards_path(0), class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Categories", categories_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "History", history_index_path, class: "header" %>
+</div>
+
+<div class="main">
+  <% @categories.each do |category| %>
+    <%= link_to edit_category_path(category) do %>
+      <div class="item_small">
+        <%= category.name %>
+      </div><% end %>
+  <% end %>
+<div>
+
+<br><br><br>
+<%= link_to "New Category", new_category_path, class: "submit_button" %>

@@ -1,2 +1,30 @@
-<h1>History#index</h1>
-<p>Find me in app/views/history/index.html.erb</p>
+<div class="wide">
+  <%= link_to "Today", users_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Rewards", user_rewards_path(0), class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Categories", categories_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "History", history_index_path, class: "header" %>
+</div>
+
+<div class="main">
+  <table class="table">
+    <tr>
+      <th>[ Week ]</th>
+      <% @users.each do |user| %>
+        <th style="padding: 5px 30px;"><%= user.name %></th>
+      <% end %>
+    </tr>
+    <% @categories.each do |category, users| %>
+      <tr>
+        <td style="padding: 5px 15px;"><%= category.name %></td>
+        <% users.each do |user, day| %>
+          <td style="text-align:center;padding: 10px 0px 0px 0px;">
+            <div class="history red"><%= day[:neg] %></div> <div class="history green"><%= day[:pos] %></div>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+<div>

@@ -1,2 +1,37 @@
-<h1>Users#index</h1>
-<p>Find me in app/views/users/index.html.erb</p>
+<div class="wide">
+  <%= link_to "Today", users_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Rewards", user_rewards_path(0), class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Categories", categories_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "History", history_index_path, class: "header" %>
+</div>
+
+<div class="main">
+  <%= audio_tag "boo.wav", id: "audio_fail" %>
+  <%= audio_tag "success.wav", id: "audio_success" %>
+  <% @users.each do |user, points| %>
+    <div id="modal_<%= user.id %>" onclick="play('modal_<%= user.id %>', <%= points[:new] %>)" class="<%= points[:new] != 0 ? 'popup' : 'hidden' %>">
+      <%= user.name %> <%= points[:new] > 0 ? "earned" : "lost" %> points! <span class="popup_points <%= points[:new] > 0 ? 'green' : 'red' %>"><%= points[:new] %></span>
+    </div>
+    <%= link_to new_user_point_path(user) do %>
+      <div class="item">
+        <%= user.name %>
+        <div class="neg_points"><%= points[:neg] %></div>
+        <div class="pos_points"><%= points[:pos] %></div>
+      </div><% end %>
+  <% end %>
+<div>
+
+<script>
+function play(modal, points) {
+  if (points > 0) {
+    document.getElementById("audio_success").play();
+  } else {
+    document.getElementById("audio_fail").play();
+  }
+  document.getElementById(modal).classList.add('hidden');
+  document.getElementById(modal).classList.remove('modal');
+}
+</script>
