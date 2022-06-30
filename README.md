@@ -44,9 +44,15 @@
 # Deployment
 
 ## Build container
-```bash
-$ docker build -t pathfinder-rb .
-```
+1. Clone pathfinder repo
+   ```bash
+   $ git clone https://github.com/phR0ze/pathfinder-rb 
+   ```
+2. Build the container
+   ```bash
+   $ cd pathfinder-rb
+   $ docker build -t pathfinder-rb .
+   ```
 
 ## Run on server
 1. Restore data as needed
