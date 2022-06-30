@@ -55,7 +55,7 @@ $ docker build -t pathfinder-rb .
    ```
 2. Execute
    ```
-   $ docker run --rm -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb
+   $ docker run --rm -v $(pwd):/usr/src/app -p 3000:3000 -e TZ=America/Boise pathfinder-rb
    ```
 
 ## Run manually
