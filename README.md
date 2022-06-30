@@ -260,17 +260,22 @@ Rails will automatically adds an `id` column for each table as an auto-increment
 Additionally Rails will include `created_at` and `updated_at` columns and manage these for us setting
 the values when we create or update a model object.
 
-1. Create the models we'll need for our app:
+1. Run the docker container tools we'll need:
    ```bash
-   $ bin/rails generate model User name:string
-   $ bin/rails generate model Category name:string value:integer
-   $ bin/rails generate model Reward value:integer user:references
-   $ bin/rails generate model Point value:integer user:references category:references
+   $ docker run --rm -it -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb bash
    ```
 
-2. Run the resulting migrations to create the proper tables:
+2. Create the models we'll need for our app:
    ```bash
-   $ bin/rails db:migrate
+   $ rails generate model User name:string
+   $ rails generate model Category name:string value:integer
+   $ rails generate model Reward value:integer user:references
+   $ rails generate model Point value:integer user:references category:references
+   ```
+
+3. Run the resulting migrations to create the proper tables:
+   ```bash
+   $ rails db:migrate
    ```
 
 ## Populate Data
