@@ -2,14 +2,218 @@
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
  * vendor/assets/stylesheets directory can be referenced here using a relative path.
  *
  * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
  *= require_tree .
  *= require_self
  */
+
+.wide {
+  margin: auto;
+  width: 90%;
+}
+
+.main {
+  background-color: #fafafa;
+  margin: auto;
+  width: 80%;
+  padding: 20px;
+  border: 1px solid lightgrey;
+  border-radius: 2%;
+}
+
+.hidden {
+  display: none;
+}
+
+.header {
+  margin: 0px;
+  color: black;
+  font-size: 3em;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.title {
+  margin: 0px;
+  color: black;
+  font-size: 3em;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.table {
+  color: black;
+  font-size: 3em;
+}
+tbody tr:nth-of-type(even) {
+  background-color: #d3d3d3;
+}
+
+.item {
+  background-color: #ededed;
+  font-size: 3.5em;
+  text-align: center;
+  color: black;
+  display: inline-block;
+  min-width: 170px;
+  height: 130px;
+  padding: 20px 40px 0px 40px;
+  border: 1px solid lightgrey;
+  border-radius: 10%;
+  margin: 30px;
+}
+
+.item_small {
+  background-color: #ededed;
+  font-size: 2.5em;
+  text-align: center;
+  color: black;
+  display: inline-block;
+  min-width: 150px;
+  padding: 10px 20px 10px 20px;
+  border: 1px solid lightgrey;
+  border-radius: 10%;
+  margin: 20px;
+}
+
+/* History index neg/pos points styling */
+.history {
+  font-size: 1em;
+  color: white;
+  height: 50px;
+  width: 50px;
+  border-radius: 20%;
+  position: relative;
+  display: inline-block;
+  padding: 0px 5px 10px 5px;
+}
+
+/* User index neg/pos points styling */
+.pos_points {
+  background-color: green;
+  font-size: 1em;
+  color: white;
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+  position: relative;
+  left: 130px;
+  top: -50px;
+}
+.neg_points {
+  background-color: red;
+  font-size: 1em;
+  color: white;
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+  position: relative;
+  left: 60px;
+  top: 15px;
+}
+
+.popup {
+  background-color: #54e0ff;
+  font-size: 6em;
+  text-align: center;
+  color: black;
+  padding: 60px;
+  border: 1px solid lightgrey;
+  border-radius: 5%;
+  z-index: 10;
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.popup_points {
+  color: white;
+  font-size: 1.3em;
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: red;
+}
+
+.points {
+  background-color: #34b4eb;
+  font-size: 1em;
+  color: white;
+  margin: auto;
+  max-width: 150px;
+  border-radius: 50%;
+  position: relative;
+  left: 80px;
+}
+
+.total {
+  background-color: #34b4eb;
+  font-size: 3.5em;
+  text-align: center;
+  color: white;
+  display: inline-block;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  padding: 0px 30px 0px 30px;
+  border: 1px solid lightgrey;
+  border-radius: 50%;
+}
+
+.plus_button{
+  background-color: green;
+  font-size: 1em;
+  color: white;
+  height: 50px;
+  width: 50px;
+  border-radius: 20%;
+  position: relative;
+  display: inline-block;
+  left: 0px;
+  top: 0px;
+}
+
+.minus_button{
+  background-color: red;
+  font-size: 1em;
+  color: white;
+  height: 50px;
+  width: 50px;
+  border-radius: 20%;
+  position: relative;
+  display: inline-block;
+  left: 0px;
+  top: 0px;
+}
+
+.input_box {
+  text-align: center;
+  color: green;
+  font-size: 2.5em;
+  padding: 5px;
+  border-radius: 5%;
+}
+
+.submit_button{
+  background-color: #34b4eb;
+  font-size: 2.5em;
+  color: white;
+  text-decoration: none; 
+  margin-top: 40px;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5%;
+  position: relative;
+}
