@@ -211,22 +211,20 @@ end
 ### Controllers
 Controllers are Ruby classes and their public methods are actions.
 
-Generate a few controllers we'll need:
-```bash
-$ bin/rails generate controller Users index --skip-routes
-$ bin/rails generate controller Points index --skip-routes
-$ bin/rails generate controller Rewards index --skip-routes
-$ bin/rails generate controller Categories index --skip-routes
-```
-
-Rails creates a few files per controler e.g.:
+1. Run the docker container tools we'll need:
+   ```bash
+   $ docker run --rm -it -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb bash
+   ```
+2. Generate the controllers we'll need:
+   ```bash
+   $ rails generate controller Users index --skip-routes
+   $ rails generate controller Points index --skip-routes
+   $ rails generate controller History index --skip-routes
+   $ rails generate controller Rewards index --skip-routes
+   $ rails generate controller Categories index --skip-routes
+   ```
+Note: Rails will create a few files per controler e.g.:
 * `app/controllers/users_controller.rb` the controller file
-  ```ruby
-  class UsersController < ApplicationController
-    def index
-    end
-  end
-  ```
 * `app/views/users/index.html.rb` the view file
 
 ### Views
