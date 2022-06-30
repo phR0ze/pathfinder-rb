@@ -49,9 +49,14 @@ $ docker build -t pathfinder-rb .
 ```
 
 ## Run on server
-```
-$ docker run --rm -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb
-```
+1. Restore data as needed
+   ```bash
+   $ cp ~/Backup/development.sqlite3 ~/Projects/pathfinder-rb/db
+   ```
+2. Execute
+   ```
+   $ docker run --rm -v $(pwd):/usr/src/app -p 3000:3000 pathfinder-rb
+   ```
 
 ## Run manually
 1. Execute app in shell
