@@ -5,7 +5,9 @@
   <p class="header">&nbsp;|&nbsp;</p>
   <%= link_to "Categories", categories_path, class: "header" %>
   <p class="header">&nbsp;|&nbsp;</p>
-  <%= link_to "History", history_index_path, class: "header" %>
+  <%= link_to "Week", history_index_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Prior Week", history_index_path(:prior => 1), class: "header" %>
 </div>
 
 <div class="main">

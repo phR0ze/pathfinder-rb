@@ -5,13 +5,15 @@
   <p class="header">&nbsp;|&nbsp;</p>
   <%= link_to "Categories", categories_path, class: "header" %>
   <p class="header">&nbsp;|&nbsp;</p>
-  <%= link_to "History", history_index_path, class: "header" %>
+  <%= link_to "Week", history_index_path, class: "header" %>
+  <p class="header">&nbsp;|&nbsp;</p>
+  <%= link_to "Prior Week", history_index_path(:prior => 1), class: "header" %>
 </div>
 
 <div class="main">
   <table class="table">
     <tr>
-      <th>[ Week ]</th>
+      <th>[ <%= @range %> ]</th>
       <% @users.each do |user| %>
         <th style="padding: 5px 30px;"><%= user.name %></th>
       <% end %>
@@ -19,12 +21,24 @@
     <% @categories.each do |category, users| %>
       <tr>
         <td style="padding: 5px 15px;"><%= category.name %></td>
-        <% users.each do |user, day| %>
+        <% users.each do |user, signed_points| %>
           <td style="text-align:center;padding: 10px 0px 0px 0px;">
-            <div class="history red"><%= day[:neg] %></div> <div class="history green"><%= day[:pos] %></div>
+            <div class="history red"><%= signed_points[:neg] %></div> <div class="history green"><%= signed_points[:pos] %></div>
           </td>
         <% end %>
       </tr>
     <% end %>
+    <tr>
+      <td style="padding: 5px 15px; font-weight: bold">Total</td>
+      <% @weekly.each do |user, total| %>
+        <td style="text-align:center;padding: 10px 0px 0px 0px;">
+          <% if total < 0 %>
+            <div class="history red"><%= total.abs %></div>
+          <% else %>
+            <div class="history green"><%= total %></div>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
   </table>
 <div>

@@ -57,7 +57,7 @@
 ## Run on server
 1. Restore data as needed
    ```bash
-   $ cp ~/Backup/development.sqlite3 ~/Projects/pathfinder-rb/db
+   $ cp ~/Storage/Backup/development.sqlite3 ~/Projects/pathfinder-rb/db
    ```
 2. Execute
    ```
