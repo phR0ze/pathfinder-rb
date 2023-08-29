@@ -4,13 +4,13 @@ class HistoryController < ApplicationController
 
     # Default is to have the week start on Monday
     start = (params[:prior].nil? || params[:prior] == 0) ? Time.now.beginning_of_week : Time.now.beginning_of_week - 1.week
-    finish = start + 1.week - 1.day
+    finish = start + 1.week
     @range = start.strftime("%m/%d") + " - " + finish.strftime("%m/%d")
 
     # Points per week per user per category
     @categories = Category.all.to_h {|category|
       user_signed_points = User.all.to_h {|user|
-        points = user.points.where("category_id = :id and created_at >= :time", {id: category.id, time: start})
+        points = user.points.where("category_id = :id and created_at >= :start and created_at <= :finish", {id: category.id, start: start, finish: finish})
 
         # Split out negative and positive
         signed_points = {
@@ -26,7 +26,7 @@ class HistoryController < ApplicationController
 
     # Total points per week per user
     @weekly = User.all.to_h {|user|
-      points = user.points.where("created_at >= :time", {time: start}).sum(:value)
+      points = user.points.where("created_at >= :start and created_at <= :finish", {start: start, finish: finish}).sum(:value)
       [user, points]
     }
 
